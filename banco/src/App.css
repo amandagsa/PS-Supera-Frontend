@@ -11,4 +11,5 @@ input {
 
 table{
   display: inline-flexbox;
+  margin: 30px auto;
 }
