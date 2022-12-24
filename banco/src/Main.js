@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import TabelaContas from './TabelaContas';
+import { Link } from 'react-router-dom';
 
 function Main() {
   const baseUrl = "http://localhost:8080";
@@ -20,7 +21,7 @@ function Main() {
   }, []);
 
   return (
-    <div className='inicial'>
+    <div>
       <TabelaContas vetor={contas}/>
     </div>
   );
