@@ -1,23 +1,15 @@
-
 import { useEffect, useState } from 'react';
 import './App.css';
 import TabelaContas from './TabelaContas';
-import { Link } from 'react-router-dom';
+import config from './config.json'
 
 function Main() {
-  const baseUrl = "http://localhost:8080";
-
-  const conta = {
-    idConta: '',
-    nomeResponsavel: '',
-  }
-
   const [contas, setContas] = useState([]);
   
   useEffect(()=>{
-    fetch(`${baseUrl}/conta`)
-    .then(retorno => retorno.json())
-    .then(retorno_convertido => setContas(retorno_convertido))
+    fetch(`${config.baseUrl}/conta`)
+    .then(retornoConta => retornoConta.json())
+    .then(retornoContaConvertido => setContas(retornoContaConvertido))
   }, []);
 
   return (

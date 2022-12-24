@@ -1,28 +1,33 @@
-
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Formulario from './Formulario';
 import TabelaTransferencia from './TabelaTransferencia';
 import './App.css';
+import config from './config.json'
 
 function Transferencias() {
-  const baseUrl = "http://localhost:8080/transferencia";
 
-  const transferencia={
+  const transferencia = {
     dataInicial: '',
     dataFinal: '',
     operador: ''
   }
 
-  const [transferencias, setTransferencias] = useState([]);
   const [objTransferencia, setObjTransferencia] = useState(transferencia);
+  const [transferencias, setTransferencias] = useState([]);
+  const [saldoTotal, setSaldoTotal] = useState(0);
+  const [saldoPeriodo, setSaldoPeriodo] = useState(0);
 
   const param = useParams();
 
   useEffect(()=>{
-    fetch(`${baseUrl}/${param.idConta}`)
+    fetch(`${config.baseUrl}/transferencia/${param.idConta}`)
     .then(retorno => retorno.json())
-    .then(retorno_convertido => setTransferencias(retorno_convertido))  
+    .then(data => {
+      setTransferencias(data.listTransferencia);
+      setSaldoTotal(data.saldoTotal);
+      setSaldoPeriodo(data.saldoPeriodo);
+    });
   }, []);
 
   const aoDigitar = (e) => {
@@ -43,16 +48,19 @@ function Transferencias() {
     
     const join = keysMapped.join('&');
 
-    fetch(`${baseUrl}/${param.idConta}?${join}`)
-    .then(retorno => retorno.json())
-    .then(retorno_convertido => setTransferencias(retorno_convertido))
+    fetch(`${config.baseUrl}/transferencia/${param.idConta}?${join}`)
+    .then(retornoConta => retornoConta.json())
+    .then(data => {
+      setTransferencias(data.listTransferencia);
+      setSaldoTotal(data.saldoTotal);
+      setSaldoPeriodo(data.saldoPeriodo);
+    });
   }
 
   return (
     <div>
       <Formulario eventoTeclado={aoDigitar} pesquisar={pesquisar}/>
-      <TabelaTransferencia vetor={transferencias}/>
-      <Link to="/">Selecionar Conta</Link>
+      <TabelaTransferencia transferencias={transferencias} saldoTotal={saldoTotal} saldoPeriodo={saldoPeriodo}/>
     </div>
   );
 }
