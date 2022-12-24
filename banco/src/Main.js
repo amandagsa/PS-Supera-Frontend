@@ -4,7 +4,7 @@ import './App.css';
 import TabelaContas from './TabelaContas';
 
 function Main() {
-  const baseUrl = "http://localhost:8080/";
+  const baseUrl = "http://localhost:8080";
 
   const conta = {
     idConta: '',
