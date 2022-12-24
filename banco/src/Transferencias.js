@@ -6,55 +6,61 @@ import './App.css';
 import config from './config.json'
 
 function Transferencias() {
-
-  const transferencia = {
+  const formPesquisa = {
     dataInicial: '',
     dataFinal: '',
     operador: ''
   }
 
-  const [objTransferencia, setObjTransferencia] = useState(transferencia);
+  const [objFormPesquisa, setObjFormPesquisa] = useState(formPesquisa);
   const [transferencias, setTransferencias] = useState([]);
   const [saldoTotal, setSaldoTotal] = useState(0);
   const [saldoPeriodo, setSaldoPeriodo] = useState(0);
 
   const param = useParams();
 
-  useEffect(()=>{
-    fetch(`${config.baseUrl}/transferencia/${param.idConta}`)
+  const getTransferencias = (idConta, paramsPesquisa) => {
+    let urlRequest = `${config.baseUrl}/transferencia/${idConta}`;
+
+    if(paramsPesquisa) {
+      urlRequest += `?${paramsPesquisa}`;
+    }
+
+    fetch(urlRequest)
     .then(retorno => retorno.json())
     .then(data => {
       setTransferencias(data.listTransferencia);
       setSaldoTotal(data.saldoTotal);
       setSaldoPeriodo(data.saldoPeriodo);
     });
+  }
+
+  useEffect(() => {
+    getTransferencias(param.idConta);
   }, []);
 
   const aoDigitar = (e) => {
-    setObjTransferencia({...objTransferencia, [e.target.name]:e.target.value});
+    setObjFormPesquisa({...objFormPesquisa, [e.target.name]:e.target.value});
+  }
+
+  const objFormularioToParams = (objFormPesquisa) => {
+    const campos = Object.keys(objFormPesquisa);
+    const mapeaCampos = campos.map(function(campos){
+      if(objFormPesquisa.dataInicial){
+        objFormPesquisa.dataInicial = new Date(objFormPesquisa.dataInicial).toISOString().slice(0,-5);
+      }
+      if(objFormPesquisa.dataFinal){
+        objFormPesquisa.dataFinal = new Date(objFormPesquisa.dataFinal).toISOString().slice(0,-13).concat("23:59:59");
+      }
+      return campos + '=' + encodeURIComponent(objFormPesquisa[campos]);
+    });
+
+    return mapeaCampos.join('&');
   }
 
   const pesquisar = () => {
-    const keys = Object.keys(objTransferencia);
-    const keysMapped = keys.map(function(key){
-      if(objTransferencia.dataInicial){
-        objTransferencia.dataInicial = new Date(objTransferencia.dataInicial).toISOString().slice(0,-5);
-      }
-      if(objTransferencia.dataFinal){
-        objTransferencia.dataFinal = new Date(objTransferencia.dataFinal).toISOString().slice(0,-13).concat("23:59:59");
-      }
-      return key + '=' + encodeURIComponent(objTransferencia[key]);
-    });
-    
-    const join = keysMapped.join('&');
-
-    fetch(`${config.baseUrl}/transferencia/${param.idConta}?${join}`)
-    .then(retornoConta => retornoConta.json())
-    .then(data => {
-      setTransferencias(data.listTransferencia);
-      setSaldoTotal(data.saldoTotal);
-      setSaldoPeriodo(data.saldoPeriodo);
-    });
+    const paramsPesquisa = objFormularioToParams(objFormPesquisa);
+    getTransferencias(param.idConta, paramsPesquisa);
   }
 
   return (
