@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 function TabelaContas({vetor}){
     return(              
-        <div className="container-sm">
+        <div className="m-5">
             <table className="table table-striped">
                 <thead>
                     <tr>
@@ -19,7 +19,6 @@ function TabelaContas({vetor}){
                                     <td>{obj.idConta}</td>
                                     <td>{obj.nomeResponsavel}</td>
                                     <td><Link to={`/transferencia/${obj.idConta}`}>Extrato</Link></td>
-                                    <td></td>
                                 </tr>
                             ))
                         }

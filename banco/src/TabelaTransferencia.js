@@ -1,11 +1,11 @@
 function TabelaTransferencia({transferencias, saldoTotal, saldoPeriodo}){
     return(
-        <div className="container-sm">
+        <div className="m-5">
             <table className="table table-striped">
                 <thead>
                     <tr>
-                        <th>Saldo Total: R$ {saldoTotal.toLocaleString('pt-br', {minimumFractionDigits: 2})}</th>
-                        <th>Saldo no Período: R$ {saldoPeriodo.toLocaleString('pt-br', {minimumFractionDigits: 2})}</th>                    
+                        <th colSpan={2}>Saldo Total: R$ {saldoTotal.toLocaleString('pt-br', {minimumFractionDigits: 2})}</th>
+                        <th colSpan={2}>Saldo no Período: R$ {saldoPeriodo.toLocaleString('pt-br', {minimumFractionDigits: 2})}</th>                    
                     </tr>
                 </thead>
                 <thead>
